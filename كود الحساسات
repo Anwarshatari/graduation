@@ -1,0 +1,100 @@
+ #include <SimpleDHT.h>
+
+int pinDHT11 = 2; // pin number on board 
+
+SimpleDHT11 dht11; // dh11 object from class
+
+int Smoke_sensor = A0; // analog pin 
+
+int Highest_value = 500;
+
+int sensor = 4;              // the pin that the sensor is atteched to
+int state = LOW;             // by default, no motion detected
+int val = 0;                 // variable to store the sensor status (value)
+
+
+void setup() {
+  
+ 
+  pinMode(Smoke_sensor, INPUT);
+
+  pinMode(sensor, INPUT);    // initialize sensor as an input
+  
+  Serial.begin(115200); 
+}
+
+void loop() {
+
+   int readings = analogRead(Smoke_sensor);
+
+  Serial.print("gas level ");
+  Serial.println(readings);
+  
+ // Checks if it has reached the threshold value
+  if (readings > Highest_value)
+  {
+Serial.print("Warning Fire ");
+  }
+  else
+  {
+  Serial.println(" Status : normal level ");
+  }
+  
+  
+  Serial.println("_____________________________");
+ 
+  Serial.println("Temprature and humidity  readings ");
+  
+  byte temperature = 0;
+  byte humidity = 0;
+
+  if (dht11.read(pinDHT11, &temperature, &humidity, NULL)) {
+
+    Serial.print("sensor readings fail");
+    
+  
+  }
+  
+
+  Serial.print((int)temperature); Serial.print(" C "); 
+  Serial.print((int)humidity); Serial.println("%");
+
+
+
+  /* pir sensor */
+  
+   val = digitalRead(sensor);   // read sensor value
+  if (val == HIGH) {           // check if the sensor is HIGH
+    
+    
+    
+    if (state == LOW) {
+      Serial.println("Motion detected!"); 
+      state = HIGH;       // update variable state to HIGH
+    }
+  } 
+  else {
+    
+     
+      
+      if (state == HIGH){
+        Serial.println("Motion stopped!");
+        state = LOW;       // update variable state to LOW
+    }
+
+  }
+ delay(4000);
+}
+
+
+
+
+
+
+
+
+
+
+
+// نهاية الكود
+//  أنور شطاري
